@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<robot name="kobuki_camera" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- Include Base Kobuki Model -->
+    <xacro:include filename="$(find kobuki_description)/urdf/kobuki_standalone.urdf.xacro" />
+
+    <!-- Include Camera Gazebo File -->
+    <xacro:include filename="$(find kobuki_camera_alvar)/urdf/kobuki_camera.gazebo.xacro" />
+
+    <joint name="camera_joint" type="fixed">
+        <origin xyz="0.08 0.0 0.103" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="camera_link"/>
+    </joint>
+    
+    <link name="camera_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.015 0.030 0.027"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.015 0.03 0.03"/>
+            </geometry>
+        </collision>
+    </link>
+    
+    <joint name="camera_rgb_joint" type="fixed">
+        <origin xyz="0.007 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="camera_link"/>
+        <child link="camera_rgb_frame"/>
+    </joint>
+    
+    <link name="camera_rgb_frame"/>
+
+    <joint name="camera_aux_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 ${90.0*M_PI/180.0} 0.0"/>
+        <parent link="camera_rgb_frame"/>
+        <child link="camera_aux_frame"/>
+    </joint>
+    
+    <link name="camera_aux_frame"/>
+
+    <joint name="camera_depth_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 ${-90.0*M_PI/180.0}"/>
+        <parent link="camera_aux_frame"/>
+        <child link="camera_depth_frame"/>
+    </joint>
+    
+    <link name="camera_depth_frame"/>
+    
+    <joint name="camera_virtual_link" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="camera_depth_frame"/>
+        <child link="camera"/>
+    </joint>
+    <link name="camera"/>
+
+</robot>

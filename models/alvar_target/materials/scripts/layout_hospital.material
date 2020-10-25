@@ -1,0 +1,13 @@
+material Hospital/tag
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture textAlvar.png
+      }
+    }
+  }
+}

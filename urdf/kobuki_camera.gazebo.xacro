@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<robot name="kobuki_cam_sim" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:arg name="camera_visual" default="true"/>
+
+    <gazebo reference="camera_rgb_frame">
+        <sensor name="kinect_camera" type="depth">
+            <always_on>true</always_on>
+            <update_rate>20.0</update_rate>
+            
+            <camera>
+                <horizontal_fov>${60.0*M_PI/180.0}</horizontal_fov>
+                <image>
+                    <width>960</width>
+                    <height>720</height>
+                    <!-- <format>R8G8B8</format> -->
+                    <format>B8G8R8</format>
+                </image>
+                <clip>
+                    <near>0.05</near>
+                    <far>20.0</far>
+                </clip>
+            </camera>
+
+            <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
+                <cameraName>camera_depth</cameraName>
+                <alwaysOn>true</alwaysOn>
+                <updateRate>10</updateRate>
+                <baseline>0.1</baseline>
+                <imageTopicName>/camera/rgb/image_raw</imageTopicName>
+                <cameraInfoTopicName>/camera/rgb/camera_info</cameraInfoTopicName>
+                <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
+                <depthImageCameraInfoTopicName>/camera/depth/camera_info</depthImageCameraInfoTopicName>
+                <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
+                <frameName>camera_depth_frame</frameName>
+                <pointCloudCutoff>0.4</pointCloudCutoff>
+                <!-- <pointCloudCutoffMax>3.0</pointCloudCutoffMax> -->
+                <distortionK1>0.070285</distortionK1>
+                <distortionK2>-0.167747</distortionK2>
+                <distortionK3>0.0</distortionK3>
+                <distortionT1>0.0</distortionT1>
+                <distortionT2>0.0</distortionT2>
+                <!--
+                <CxPrime>0</CxPrime>
+                <Cx>0</Cx>
+                <Cy>0</Cy>
+                <focalLength>0</focalLength>
+                <hackBaseline>0</hackBaseline>
+                -->
+            </plugin>
+        </sensor>
+    </gazebo>
+
+
+</robot>

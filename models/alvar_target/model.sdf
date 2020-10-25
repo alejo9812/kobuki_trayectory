@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+
+<sdf version="1.5">
+
+	<model name="alvar_target">
+
+		<!-- Give the base link a unique name -->
+		<link name="base">
+
+			<!-- Offset the base -->
+			<pose>0 0 0 0 0 0</pose>
+			<enable_wind>0</enable_wind>
+			<kinematic>0</kinematic>
+
+			<!-- Visual Properties -->
+			<collision name="collision">
+				<geometry>
+					<mesh>
+						<uri>model://alvar_target/meshes/alvarTag.dae</uri>
+					</mesh>
+				</geometry>
+			</collision>
+
+			<!-- Visual Properties -->
+			<visual name="visual">
+				<geometry>
+					<mesh>
+						<uri>model://alvar_target/meshes/alvarTag.dae</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://alvar_target/materials/scripts</uri>
+						<uri>model://alvar_target/materials/textures</uri>
+						<name>Hospital/tag</name>
+					</script>
+					<ambient>1.0 1.0 1.0 1</ambient>
+					<shader type='vertex'>
+						<normal_map>__default__</normal_map>
+					</shader>
+					<diffuse>1 1 1 1</diffuse>
+					<specular>0 0 0 1</specular>
+					<emissive>0 0 0 1</emissive>
+				</material>
+			</visual>
+		</link>
+
+	</model>
+
+</sdf>
