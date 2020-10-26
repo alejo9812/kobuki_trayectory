@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>kobuki_trayectoryr</name>
+  <name>kobuki_trayectory</name>
   <version>0.0.1</version>
   <description>The kobuki_trayectory package</description>
 
@@ -9,6 +9,8 @@
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
+
+  
 
   <build_depend>ar_track_alvar</build_depend>
   <build_depend>gazebo_ros</build_depend>
@@ -19,6 +21,13 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>tf2</build_depend>
   <build_depend>tf2_ros</build_depend>
+  <build_depend>yocs_cmd_vel_mux</build_depend>
+  <build_depend>gazebo_ros</build_depend>
+  <build_depend>gazebo_plugins</build_depend>
+  <build_depend>kobuki_gazebo_plugins</build_depend>
+  <build_depend>kobuki_random_walker</build_depend>
+  <build_depend>kobuki_safety_controller</build_depend>
+  <build_depend>robot_state_publisher</build_depend>
 
   <build_export_depend>ar_track_alvar</build_export_depend>
   <build_export_depend>gazebo_ros</build_export_depend>
@@ -29,6 +38,13 @@
   <build_export_depend>std_msgs</build_export_depend>
   <build_export_depend>tf2</build_export_depend>
   <build_export_depend>tf2_ros</build_export_depend>
+  <build_export_depend>yocs_cmd_vel_mux</build_export_depend>
+  <build_export_depend>gazebo_ros</build_export_depend>
+  <build_export_depend>gazebo_plugins</build_export_depend>
+  <build_export_depend>kobuki_gazebo_plugins</build_export_depend>
+  <build_export_depend>kobuki_random_walker</build_export_depend>
+  <build_export_depend>kobuki_safety_controller</build_export_depend>
+  <build_export_depend>robot_state_publisher</build_export_depend>
   
   <exec_depend>ar_track_alvar</exec_depend>
   <exec_depend>gazebo_ros</exec_depend>
@@ -39,11 +55,17 @@
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>tf2</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
-
+  <exec_depend>yocs_cmd_vel_mux</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>gazebo_plugins</exec_depend>
+  <exec_depend>kobuki_gazebo_plugins</exec_depend>
+  <exec_depend>kobuki_random_walker</exec_depend>
+  <exec_depend>kobuki_safety_controller</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
 
   <export>
     <gazebo_ros gazebo_model_path="${prefix}/models"/>
-    <gazebo_ros gazebo_media_path="${prefix}/worlds"/>
+    <gazebo_roxs gazebo_media_path="${prefix}/worlds"/>
   </export>
 
 </package>
