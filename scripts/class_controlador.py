@@ -47,17 +47,19 @@ class CONTROL_1:
         self.newmsg = Twist()
 
         rospy.loginfo("Inicializo correctamente")
-
+        
         while (not rospy.is_shutdown()):
             for j in range(len(self.coordenadas)-1):
                 while(len(self.MTH) == 1):
-                    self.update_goal(j)
+                    self.update_goal(j+1)
                     self.MTH = self.Calcular_MTH()
-                
+                    rate.sleep()
+
                 while (e_ >= 0.001):
                     self.MTH = self.Calcular_MTH()
+                    rospy.loginfo(self.MTH)
+                    
                     if(len(self.MTH) != 1):
-                        
                         e[0] = self.MTH[0,3]
                         e[1] = self.MTH[1,3]
                         e[2] = self.MTH[2,3]
@@ -73,8 +75,14 @@ class CONTROL_1:
                         self.newmsg.angular.y = 0
                         self.newmsg.angular.z = Kp[2]*e[2]+Ki[2]*e_sum[2]
                         
+                        if self.newmsg.linear.x > self.vel_cruc:
+                            self.newmsg.linear.x = self.vel_cruc
+                        elif self.newmsg.linear.x < -self.vel_cruc:
+                            self.newmsg.linear.x = -self.vel_cruc
+
                         self.pub1.publish(self.newmsg)
                         
+                        rospy.loginfo(e)
                     rate.sleep()
                 
                 rate.sleep()
@@ -93,8 +101,7 @@ class CONTROL_1:
         t.transform.rotation.z = 0.0
         t.transform.rotation.w = 1.0
 
-        tfm = tf2_msgs.msg.TFMessage([t])
-        self.pub_tf.publish(tfm)
+        self.broadcts.sendTransform(t)
 
     def Calcular_MTH(self):
         try:
@@ -112,7 +119,7 @@ class CONTROL_1:
         MTH_GOAL[1,3] = trans_base_marker.transform.translation.y
         MTH_GOAL[2,3] = trans_base_marker.transform.translation.z
 
-        rospy.loginfo(MTH_GOAL)
+        #rospy.loginfo(MTH_GOAL)
 
         return MTH_GOAL
 
