@@ -24,6 +24,7 @@ class CONTROL_1:
     def __init__(self):
         self.pub_tf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=1)
         self.pub1 = rospy.Publisher("/mobile_base/commands/velocity",Twist,queue_size=10)
+        rospy.Subscriber("/odom",Odometry,self.callback)
 
         self.broadcts  = tf2_ros.TransformBroadcaster()
         self.transform = TransformStamped()
@@ -35,15 +36,14 @@ class CONTROL_1:
         self.f = 10
         rate = rospy.Rate(self.f)
         self.vel_cruc = 0.30
+        self.w_max = 1.047197
 
         self.a=0
-        self.pos = (0,0,0)
-        self.vel = (0,0,0)
-        Kp = (1,1,1)
-        Ki = (10,10,10)
+        self.ori = 0
+        Kp = (5,5,0.1)
+        Ki = (0.01,0.01,0)
         e = [0,0,0]
         e_sum = [0,0,0]
-        e_ = 10
         self.newmsg = Twist()
 
         rospy.loginfo("Inicializo correctamente")
@@ -55,14 +55,17 @@ class CONTROL_1:
                     self.MTH = self.Calcular_MTH()
                     rate.sleep()
 
-                while (e_ >= 0.001):
+                e_ = 10
+                while (e_ >= 0.1):
+                    self.update_goal(j+1)
                     self.MTH = self.Calcular_MTH()
-                    rospy.loginfo(self.MTH)
+                    #rospy.loginfo(self.MTH)
                     
                     if(len(self.MTH) != 1):
                         e[0] = self.MTH[0,3]
                         e[1] = self.MTH[1,3]
-                        e[2] = self.MTH[2,3]
+                        e[2] = -self.ori+self.coordenadas[j+1][2]
+
                         e_sum[0] = e_sum[0] + e[0]/self.f
                         e_sum[1] = e_sum[1] + e[1]/self.f
                         e_sum[2] = e_sum[2] + e[2]/self.f
@@ -80,11 +83,19 @@ class CONTROL_1:
                         elif self.newmsg.linear.x < -self.vel_cruc:
                             self.newmsg.linear.x = -self.vel_cruc
 
+                        if self.newmsg.angular.z > self.w_max:
+                            self.newmsg.angular.z = self.w_max
+                        elif self.newmsg.angular.z < -self.w_max:
+                            self.newmsg.angular.z = -self.w_max
+
                         self.pub1.publish(self.newmsg)
                         
-                        rospy.loginfo(e)
+                        rospy.loginfo(e_)
+                    
+                    
                     rate.sleep()
-                
+
+                rospy.loginfo("CAMBIO DE COORDENADA")
                 rate.sleep()
 
     def update_goal(self, i):
@@ -123,25 +134,29 @@ class CONTROL_1:
 
         return MTH_GOAL
 
-    coordenadas = [ ( 0.0, 0.0, 0.0),
-                    (3.5, 0.0, 0.0),
-                    (-3.5, 0.0, -1.5708),
-                    (-3.5, 3.5, -1.5708),
-                    (-3.5, 3.5, -3.1416),
-                    ( 1.5, 3.5, -3.1416),
-                    ( 1.5, 3.5, -4.7124),
-                    ( 1.5,-1.5, -4.7124),
-                    ( 1.5,-1.5, -3.1416),
-                    ( 3.5,-1.5, -3.1416),
-                    ( 3.5,-1.5, -4.7124),
-                    ( 3.5,-8.0, -4.7124),
-                    ( 3.5,-8.0, -6.2832),
-                    (-2.5,-8.0, -6.2832),
-                    (-2.5,-8.0, -7.8540),
-                    (-2.5,-5.5, -7.8540),
-                    (-2.5,-5.5, -9.4248),
-                    ( 1.5,-5.5, -9.4248),
-                    ( 1.5,-5.5, -7.8540),
-                    ( 1.5,-3.5, -7.8540),
-                    ( 1.5,-3.5, -6.2832),
-                    (-1.0,-3.5, -6.2832)]
+    def callback(self,data):
+        aa = euler_from_quaternion([data.pose.pose.orientation.x,data.pose.pose.orientation.y,data.pose.pose.orientation.z,data.pose.pose.orientation.w])
+        self.ori = aa[2]
+
+    coordenadas = [ ( 0.0, 0.0,  0.0),
+                    (-3.5, 0.0,  0.0),
+                    (-3.5, 0.0,  1.5708),
+                    (-3.5, 3.5,  1.5708),
+                    (-3.5, 3.5,  0.0),
+                    ( 1.5, 3.5,  0.0),
+                    ( 1.5, 3.5, -1.5708),
+                    ( 1.5,-1.5, -1.5708),
+                    ( 1.5,-1.5,  0.0),
+                    ( 3.5,-1.5,  0.0),
+                    ( 3.5,-1.5, -1.5708),
+                    ( 3.5,-8.0, -1.5708),
+                    ( 3.5,-8.0, -3.1416),
+                    (-2.5,-8.0, -3.1416),
+                    (-2.5,-8.0, -4.7124),
+                    (-2.5,-5.5, -4.7124),
+                    (-2.5,-5.5, -6.2832),
+                    ( 1.5,-5.5, -6.2832),
+                    ( 1.5,-5.5, -4.7124),
+                    ( 1.5,-3.5, -4.7124),
+                    ( 1.5,-3.5, -3.1416),
+                    (-1.0,-3.5, -3.1416)]
